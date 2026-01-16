@@ -13,6 +13,7 @@ import { setupStaticFiles } from './controllers/uploadControllers.js';
 import uploadRoutes from './routes/uploadRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
 import wishlistRoutes from './routes/wishlistRoutes.js'
+import categoryRoutes from './routes/categoryRoutes.js'
 
 dotenv.config()
 
@@ -46,6 +47,7 @@ app.use('/api/upload', uploadRoutes)
 app.use('/api/banners', bannerRoutes)
 app.use('/api/search', searchRoutes)
 app.use('/api/wishlist', wishlistRoutes)
+app.use('/api/categories', categoryRoutes)
 
 connectDB()
     .then(() => {
