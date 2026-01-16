@@ -12,6 +12,7 @@ import cookieParser from 'cookie-parser'
 import { setupStaticFiles } from './controllers/uploadControllers.js';
 import uploadRoutes from './routes/uploadRoutes.js'
 import searchRoutes from './routes/searchRoutes.js'
+import wishlistRoutes from './routes/wishlistRoutes.js'
 
 dotenv.config()
 
@@ -44,6 +45,7 @@ app.use('/api/webhook', webhookRoutes)
 app.use('/api/upload', uploadRoutes)
 app.use('/api/banners', bannerRoutes)
 app.use('/api/search', searchRoutes)
+app.use('/api/wishlist', wishlistRoutes)
 
 connectDB()
     .then(() => {
