@@ -40,7 +40,7 @@ export const productSchema = z.object({
     .optional()
     .nullable(),
     
-    mainImage: z.string()
+    mainImage: z.number()
         .optional()
         .nullable(),
     

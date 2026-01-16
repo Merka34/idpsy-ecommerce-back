@@ -4,6 +4,7 @@ import {
     profile,
     loginuser,
     logout,
+    googleLogin,
 } from '../controllers/authControllers.js'
 
 const router = express.Router()
@@ -13,6 +14,8 @@ router.post('/register', registerUser)
 router.post('/login', loginuser)
 
 router.post('/logout', logout)
+
+router.post('/google', googleLogin)
 
 router.get('/profile', profile)
 

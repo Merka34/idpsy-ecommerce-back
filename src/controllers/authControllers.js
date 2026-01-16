@@ -151,3 +151,64 @@ export const logout = (req, res) => {
         .status(200)
         .json('Cierre de sesión exitoso')
 }
+
+export const googleLogin = async (req, res) => {
+    try {
+        const { token } = req.body
+
+        if (!token) {
+            return res.status(400).json({ message: 'Token no proporcionado' })
+        }
+
+        // Decodificar el token de Google
+        const decoded = jwt.decode(token)
+        const { email, name, picture } = decoded
+
+        // Buscar o crear el usuario
+        let user = await UserModel.findOne({ email })
+
+        if (!user) {
+            // Si el usuario no existe, crear uno nuevo
+            const isFisrtUser = (await UserModel.countDocuments()) === 0
+
+            user = await UserModel.create({
+                username: name || email.split('@')[0],
+                email,
+                password: await bcrypt.hash(Math.random().toString(36), 10), // Contraseña aleatoria
+                isAdmin: isFisrtUser,
+                profilePicture: picture,
+            })
+        }
+
+        // Generar token JWT local
+        const JWT_SECRET = process.env.JWT_SECRET
+        const accessToken = jwt.sign(
+            { userId: user._id, username: user.username },
+            JWT_SECRET,
+            { expiresIn: '1h' }
+        )
+
+        // Establecer cookie
+        res.cookie('accessToken', accessToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+            maxAge: 60 * 60 * 1000,
+        })
+
+        // Retornar datos del usuario
+        res.status(200).json({
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            isAdmin: user.isAdmin,
+            profilePicture: user.profilePicture,
+        })
+    } catch (error) {
+        console.error('Error en google login:', error)
+        res.status(500).json({
+            message: 'Error al autenticarse con Google',
+            error: error.message,
+        })
+    }
+}
